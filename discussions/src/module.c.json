@@ -1945,5 +1945,104 @@
     "commit" : "0558b5fe8210f8cb22be8144df6e39a61a466ec6",
     "line" : 75,
     "diffHunk" : "@@ -1,1 +1578,1582 @@            addReplyAttributeLen(c,len);\n            break;\n        default:\n            serverPanic(\"Invalid module empty reply type %d\", type);        }\n    } else {"
+  },
+  {
+    "id" : "278d5da9-e2c6-4b1b-a7be-769f224129eb",
+    "prId" : 9202,
+    "prUrl" : "https://github.com/redis/redis/pull/9202#pullrequestreview-704375766",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "d9db3559-eb12-46a5-af68-92d314735f10",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "this needs to be documented in the top comment of `RM_Call` too",
+        "createdAt" : "2021-07-12T14:39:56Z",
+        "updatedAt" : "2021-07-12T14:54:00Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "11e18831-1865-4375-b96d-aa9c2fee5724",
+        "parentId" : "d9db3559-eb12-46a5-af68-92d314735f10",
+        "authorId" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "body" : "I think I added it",
+        "createdAt" : "2021-07-12T15:11:47Z",
+        "updatedAt" : "2021-07-12T15:11:47Z",
+        "lastEditedBy" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "67084775-44c3-4550-bced-860c1011159d",
+        "parentId" : "d9db3559-eb12-46a5-af68-92d314735f10",
+        "authorId" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "body" : "I did not, added it to `moduleCreateArgvFromUserFormat`, will add it to RM_Call as well ...",
+        "createdAt" : "2021-07-12T15:31:21Z",
+        "updatedAt" : "2021-07-12T15:31:21Z",
+        "lastEditedBy" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "9d56c97a-9076-46dc-a3bb-30e3a47b8be8",
+        "parentId" : "d9db3559-eb12-46a5-af68-92d314735f10",
+        "authorId" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "body" : "Fixed",
+        "createdAt" : "2021-07-12T17:11:10Z",
+        "updatedAt" : "2021-07-12T17:11:10Z",
+        "lastEditedBy" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "9364a3ed-be92-4981-8986-2aad05952c0e",
+        "parentId" : "d9db3559-eb12-46a5-af68-92d314735f10",
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "Only RM_ functions get their docs exported by the script... ",
+        "createdAt" : "2021-07-12T17:36:37Z",
+        "updatedAt" : "2021-07-12T17:36:37Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "f66dd942a81d4bb8a8a121ab567f735c5ca4c71b",
+    "line" : 417,
+    "diffHunk" : "@@ -1,1 +4146,4150 @@            if (flags) (*flags) |= REDISMODULE_ARGV_NO_REPLICAS;\n        } else if (*p == '3') {\n            if (flags) (*flags) |= REDISMODULE_ARGV_RESP_3;\n        } else if (*p == '0') {\n            if (flags) (*flags) |= REDISMODULE_ARGV_RESP_AUTO;"
+  },
+  {
+    "id" : "14eb4bc3-4f42-4817-8aa6-b8aa2c3b3fbd",
+    "prId" : 9202,
+    "prUrl" : "https://github.com/redis/redis/pull/9202#pullrequestreview-705052733",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "75928607-2cde-4579-ad85-499000b7acd6",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "are verbatim formats always null terminated strings? or we need to pass length with that char pointer?\r\n\r\ni see that in the spec they don't have a specified length (like bulks), and we find them by looking for : separator.\r\ni guess that means that they're expected to be text, and not binary data, and in that case they're not expected to have NULL in the middle.\r\ndo you agree?",
+        "createdAt" : "2021-07-13T11:04:30Z",
+        "updatedAt" : "2021-07-13T11:04:30Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "35158c3c-1804-4f46-85ce-f38849f3ab61",
+        "parentId" : "75928607-2cde-4579-ad85-499000b7acd6",
+        "authorId" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "body" : "The string itself does get a len output argument. regarding the format, the spec specifies that it's always 3 chars so I thought it's not needed to give a length.\r\n\r\n> Moreover the first three bytes provide information about the format of the following string, which can be txt for plain text, or mkd for markdown. The fourth byte is always :.\r\n\r\nhttps://github.com/antirez/RESP3/blob/master/spec.md",
+        "createdAt" : "2021-07-13T11:11:28Z",
+        "updatedAt" : "2021-07-13T11:11:55Z",
+        "lastEditedBy" : "9ce3c3c7-feb3-4cdb-9933-14459f8ca980",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "f66dd942a81d4bb8a8a121ab567f735c5ca4c71b",
+    "line" : 307,
+    "diffHunk" : "@@ -1,1 +3995,3999 @@}\n\n/* Return the value of an verbatim string reply,\n * An optional output argument can be given to get verbatim reply format. */\nconst char *RM_CallReplyVerbatim(RedisModuleCallReply *reply, size_t *len, const char **format) {"
   }
 ]
