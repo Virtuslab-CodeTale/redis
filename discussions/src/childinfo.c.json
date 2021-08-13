@@ -229,5 +229,71 @@
     "commit" : "9960985886855c05e027ab9ebf3cb312bf739b18",
     "line" : 27,
     "diffHunk" : "@@ -1,1 +101,105 @@            serverLog(cow_info ? LL_NOTICE : LL_VERBOSE,\n                      \"Fork CoW for %s: current %zu MB, peak %zu MB, average %llu MB\",\n                      pname, cow>>20, peak_cow>>20, (sum_cow/update_count)>>20);\n        }\n    }"
+  },
+  {
+    "id" : "8049ca27-5534-4ec7-b6be-ee35d5ab679b",
+    "prId" : 8974,
+    "prUrl" : "https://github.com/redis/redis/pull/8974#pullrequestreview-714291508",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "db0e3083-80fa-4af0-8f58-528e69382a8c",
+        "parentId" : null,
+        "authorId" : "98e31153-705f-4299-a152-78c428055d23",
+        "body" : "Hi @oranagra For the log, i think maybe users collect CoW info by this log, I break old format, WDYT? And currently I am not satisfied with current description, do you have advise?",
+        "createdAt" : "2021-07-23T12:10:08Z",
+        "updatedAt" : "2021-07-23T12:10:08Z",
+        "lastEditedBy" : "98e31153-705f-4299-a152-78c428055d23",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "34a237e3-f636-42b9-986d-7001bebb3db1",
+        "parentId" : "db0e3083-80fa-4af0-8f58-528e69382a8c",
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "i don't think we need to retain backward compatibility with log messages.\r\nmaybe ins some special cases like redis fails to start up due to bind address being used and such, in case someone (like our tests) attempts to resolve that and retry.\r\n\r\nBut breaking this log message won't result in any actual problem, just missing metrics, and the right way to extract these metrics is from INFO (always has been)",
+        "createdAt" : "2021-07-25T08:32:54Z",
+        "updatedAt" : "2021-07-25T08:38:04Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "9960985886855c05e027ab9ebf3cb312bf739b18",
+    "line" : 25,
+    "diffHunk" : "@@ -1,1 +99,103 @@        int cow_info = (info_type != CHILD_INFO_TYPE_CURRENT_INFO);\n        if (cow || cow_info) {\n            serverLog(cow_info ? LL_NOTICE : LL_VERBOSE,\n                      \"Fork CoW for %s: current %zu MB, peak %zu MB, average %llu MB\",\n                      pname, cow>>20, peak_cow>>20, (sum_cow/update_count)>>20);"
+  },
+  {
+    "id" : "80a7369d-65da-482f-b78e-2034b9d74508",
+    "prId" : 8974,
+    "prUrl" : "https://github.com/redis/redis/pull/8974#pullrequestreview-714892712",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "16320c15-2803-4a1a-870d-1c8c0975d3c7",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : ":scream:",
+        "createdAt" : "2021-07-26T05:19:03Z",
+        "updatedAt" : "2021-07-26T05:33:34Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "923fdc7d-924a-4eb4-984e-d2e04f9258ab",
+        "parentId" : "16320c15-2803-4a1a-870d-1c8c0975d3c7",
+        "authorId" : "98e31153-705f-4299-a152-78c428055d23",
+        "body" : "😀",
+        "createdAt" : "2021-07-26T14:10:15Z",
+        "updatedAt" : "2021-07-26T14:10:15Z",
+        "lastEditedBy" : "98e31153-705f-4299-a152-78c428055d23",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "9960985886855c05e027ab9ebf3cb312bf739b18",
+    "line" : 27,
+    "diffHunk" : "@@ -1,1 +101,105 @@            serverLog(cow_info ? LL_NOTICE : LL_VERBOSE,\n                      \"Fork CoW for %s: current %zu MB, peak %zu MB, average %llu MB\",\n                      pname, cow>>20, peak_cow>>20, (sum_cow/update_count)>>20);\n        }\n    }"
   }
 ]

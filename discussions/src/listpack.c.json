@@ -31,5 +31,159 @@
     "commit" : "c54cd006593a03835df07ac9a1a8b139d7a619d2",
     "line" : 206,
     "diffHunk" : "@@ -1,1 +898,902 @@ * when `deep` is 0, only the integrity of the header is validated.\n * when `deep` is 1, we scan all the entries one by one. */\nint lpValidateIntegrity(unsigned char *lp, size_t size, int deep){\n    /* Check that we can actually read the header. (and EOF) */\n    if (size < LP_HDR_SIZE + 1)"
+  },
+  {
+    "id" : "2602c41b-330b-481b-9cc8-c1663c219612",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-654014048",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "55a95fa3-e46d-4b6e-80ba-e429a3c61d05",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "why did you have to add the LP_EOF check?\r\nif anything you need to break the loop after calling lpValidateNext and before calling the callback.\r\nsince lpValidateNext may set `p` to NULL",
+        "createdAt" : "2021-05-06T16:15:44Z",
+        "updatedAt" : "2021-05-11T12:28:52Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "e1d0d447-6c66-48a6-80ee-f034e58642c8",
+        "parentId" : "55a95fa3-e46d-4b6e-80ba-e429a3c61d05",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "If the next element is LP_EOF, lpValidateNext does not set the next element to NULL, resulting in 1 more count, this code is dead code, so there is no bug.\r\nI tried to set *pp to NULL in lpValidateNext if the next entry is LP_EOF, but that would cause stream validate to fail, because stream valiadte would call lpGetIntegerIfValid, resulting in assert.",
+        "createdAt" : "2021-05-07T01:32:34Z",
+        "updatedAt" : "2021-05-11T12:28:52Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "eefc4b87-9ebc-456a-9901-56374899e8e7",
+        "parentId" : "55a95fa3-e46d-4b6e-80ba-e429a3c61d05",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "Moving the EOF check to lpValidateNext is a better approach.",
+        "createdAt" : "2021-05-07T01:34:08Z",
+        "updatedAt" : "2021-05-11T12:28:52Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 589,
+    "diffHunk" : "@@ -1,1 +1114,1118 @@    uint32_t count = 0;\n    unsigned char *p = lp + LP_HDR_SIZE;\n    while(p && p[0] != LP_EOF) {\n        unsigned char *prev = p;\n"
+  },
+  {
+    "id" : "a7b1bc02-29fc-410c-b266-c18a1400c6d9",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-655170623",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "a6829dce-67c0-4a97-9de9-c4e1b38137b7",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "i'm still not sure about this change.\r\ncertainly your previous version who called the entry_cb after progressing to the `Next` element was wrong, and i do still think that the increment of `count++` should be last like before (not that it really makes any difference).\r\n\r\nbut regardless, i'm not sure about the added check of LP_EOF in the `while` loop.\r\nin contrast to what you wrote, lpValidateNext does check for LP_EOF and sets the output var to NULL. but indeed that would not cause the loop to break, since it returns `1`. setting the output to NULL will cause the next iteration to break, but the `count` will still be incremented.\r\ni think you're right that it should not be incremented, but then how come this check was passing (or how come your change didn't affect it)?\r\n```c\r\n    if (numele != LP_HDR_NUMELE_UNKNOWN && numele != count)\r\n        return 0;\r\n```",
+        "createdAt" : "2021-05-09T07:03:30Z",
+        "updatedAt" : "2021-05-11T12:28:52Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "586b31ee-6f76-478f-85e2-b53ed52e144d",
+        "parentId" : "a6829dce-67c0-4a97-9de9-c4e1b38137b7",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "Before this, ```deep``` of ```lpValidateIntegrity``` would never be set to 1, because this piece of code was dead, so the bug was never found.\r\nOriginally I wanted to test when next is ```LP_EOF```, set p to ```NULL```, it will cause changes of ```t_stream```, so i give up and then forgot to restore ```count++```. \r\nI will move ```count++``` to last.",
+        "createdAt" : "2021-05-10T01:23:37Z",
+        "updatedAt" : "2021-05-11T12:28:52Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 589,
+    "diffHunk" : "@@ -1,1 +1114,1118 @@    uint32_t count = 0;\n    unsigned char *p = lp + LP_HDR_SIZE;\n    while(p && p[0] != LP_EOF) {\n        unsigned char *prev = p;\n"
+  },
+  {
+    "id" : "f2ec464a-4c8e-42a7-ad5d-dff6772b1035",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-711454186",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "4cbb5208-3f78-40e0-9554-a0f56ec8bad7",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "ziplistRandomPair does have a detailed top comment, please copy that too (and adjust).\r\nsame goes for lpRandomPairs, and lpRandomPairsUnique",
+        "createdAt" : "2021-07-21T11:24:27Z",
+        "updatedAt" : "2021-07-22T06:38:28Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 635,
+    "diffHunk" : "@@ -1,1 +1163,1167 @@ * 'key' and 'val' are used to store the result key value pair.\n * 'val' can be NULL if the value is not needed. */\nvoid lpRandomPair(unsigned char *lp, unsigned long total_count, listpackEntry *key, listpackEntry *val) {\n    unsigned char *p;\n"
+  },
+  {
+    "id" : "0d52cb60-c01b-40a2-9c3c-c62d143b3ed4",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-723913876",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "84ccef44-e34e-49a6-90a2-3ba69eb0ce9f",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "why did you change lpReplace to take a double pointer (`**`) `p`?\r\nI suppose just for symmetry with lpReplaceInteger?\r\nlet's at least document what it does with it (copy the text from lpReplaceInteger?).",
+        "createdAt" : "2021-08-05T20:32:30Z",
+        "updatedAt" : "2021-08-05T20:39:47Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "6073bffe-3c99-43dd-9b2a-5193e50e1415",
+        "parentId" : "84ccef44-e34e-49a6-90a2-3ba69eb0ce9f",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "Yes, just symmetry with `lpReplaceInteger`.",
+        "createdAt" : "2021-08-06T01:36:22Z",
+        "updatedAt" : "2021-08-06T01:36:22Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 551,
+    "diffHunk" : "@@ -1,1 +955,959 @@unsigned char *lpReplace(unsigned char *lp, unsigned char **p, unsigned char *s, uint32_t slen) {\n    return lpInsert(lp, s, NULL, slen, *p, LP_REPLACE, p);\n}\n\n/* This is just a wrapper for lpInsertInteger() to directly use a 64 bit integer"
+  },
+  {
+    "id" : "465e34ad-ea15-4b23-ac3a-c9cb385df1be",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-724970276",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "48f314ea-b132-4576-a96c-9f4ac2d90e78",
+        "parentId" : null,
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "@oranagra  I deliberately removed `hash listpack too long entry len` and `hash listpack first element too long entry len - without sanitize`, because these two tests were fixed in #9321, and this code only fixed `hash listpack first element too long entry len - without sanitize`, so I just kept it and rename it.",
+        "createdAt" : "2021-08-09T02:11:09Z",
+        "updatedAt" : "2021-08-09T02:11:34Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 600,
+    "diffHunk" : "@@ -1,1 +1125,1129 @@        if (entry_cb && !entry_cb(prev, cb_userdata))\n            return 0;\n\n        count++;\n    }"
   }
 ]

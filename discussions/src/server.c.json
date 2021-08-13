@@ -1626,5 +1626,38 @@
     "commit" : "9960985886855c05e027ab9ebf3cb312bf739b18",
     "line" : 118,
     "diffHunk" : "@@ -1,1 +5953,5957 @@     * than a page. */\n    if (listLength(c->reply) &&\n        c->reply_bytes/listLength(c->reply) >= server.page_size)\n    {\n        listIter li;"
+  },
+  {
+    "id" : "1b09a655-9f3d-45db-9c50-484d09922bd3",
+    "prId" : 8974,
+    "prUrl" : "https://github.com/redis/redis/pull/8974#pullrequestreview-715551628",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "5bac66d8-3948-4327-9a4f-2efe8d5bdcbe",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "I think the common style in redis is with spaces.\r\nnot very consistent though..",
+        "createdAt" : "2021-07-26T05:20:08Z",
+        "updatedAt" : "2021-07-26T05:33:34Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "c5f1730b-1937-444d-9520-2d787cacc61c",
+        "parentId" : "5bac66d8-3948-4327-9a4f-2efe8d5bdcbe",
+        "authorId" : "98e31153-705f-4299-a152-78c428055d23",
+        "body" : "actually, i am a bit tangled, in this case, `&&` is the top operator, i prefer to not use spaces in sub judgement",
+        "createdAt" : "2021-07-27T06:57:06Z",
+        "updatedAt" : "2021-07-27T06:57:06Z",
+        "lastEditedBy" : "98e31153-705f-4299-a152-78c428055d23",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "9960985886855c05e027ab9ebf3cb312bf739b18",
+    "line" : 118,
+    "diffHunk" : "@@ -1,1 +5953,5957 @@     * than a page. */\n    if (listLength(c->reply) &&\n        c->reply_bytes/listLength(c->reply) >= server.page_size)\n    {\n        listIter li;"
   }
 ]

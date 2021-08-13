@@ -1,0 +1,112 @@
+[
+  {
+    "id" : "074ae3e6-007f-4092-af78-cd2ed1f75c95",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-712424106",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "6fb0d849-e54e-4486-a127-3b50a1d79294",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "is that a listpack that you generated manually with dup records?",
+        "createdAt" : "2021-07-22T06:38:08Z",
+        "updatedAt" : "2021-07-22T06:38:29Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "6ebb3f9f-e833-43c4-a60d-482854571412",
+        "parentId" : "6fb0d849-e54e-4486-a127-3b50a1d79294",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "I use `corrupt payload: valid zipped hash header, dup records` test data to create the listpack.",
+        "createdAt" : "2021-07-22T07:12:05Z",
+        "updatedAt" : "2021-07-22T07:12:05Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 53,
+    "diffHunk" : "@@ -1,1 +240,244 @@        r config set sanitize-dump-payload yes\n        r debug set-skip-checksum-validation 1\n        catch { r RESTORE _hash 0 \"\\x10\\x17\\x17\\x00\\x00\\x00\\x04\\x00\\x82a\\x00\\x03\\x82b\\x00\\x03\\x82a\\x00\\x03\\x82d\\x00\\x03\\xff\\n\\x00\\xc0\\xcf\\xa6\\x87\\xe5\\xa7\\xc5\\xbe\" } err\n        assert_match \"*Bad data format*\" $err\n    }"
+  },
+  {
+    "id" : "46c2967a-4dad-4e0d-8d4f-2e8a1a4d6431",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-716977574",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "817a2eda-7f5c-40f1-be76-c87283723306",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "the comment above the test became outdated.",
+        "createdAt" : "2021-07-27T07:42:13Z",
+        "updatedAt" : "2021-07-27T07:43:07Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "8bc70ff1-a507-4926-a4d5-7fc3bd968cee",
+        "parentId" : "817a2eda-7f5c-40f1-be76-c87283723306",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "fixed.",
+        "createdAt" : "2021-07-28T13:09:01Z",
+        "updatedAt" : "2021-07-28T13:09:02Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 114,
+    "diffHunk" : "@@ -1,1 +485,489 @@    start_server [list overrides [list loglevel verbose use-exit-on-panic yes crash-memcheck-enabled no] ] {\n        r debug set-skip-checksum-validation 1\n        catch {\n            r RESTORE _hash 0 \"\\x0D\\x3D\\x3D\\x00\\x00\\x00\\x3A\\x00\\x00\\x00\\x14\\x13\\x00\\xF5\\x02\\xF5\\x02\\xF2\\x02\\x53\\x5F\\x31\\x04\\xF3\\x02\\xF3\\x02\\xF7\\x02\\xF7\\x02\\xF8\\x02\\x02\\x5F\\x37\\x04\\xF1\\x02\\xF1\\x02\\xF6\\x02\\x02\\x5F\\x35\\x04\\xF4\\x02\\x02\\x5F\\x33\\x04\\xFA\\x02\\x02\\x5F\\x39\\x04\\xF9\\x02\\xF9\\xFF\\x09\\x00\\xB5\\x48\\xDE\\x62\\x31\\xD0\\xE5\\x63\"\n        } err"
+  },
+  {
+    "id" : "2e4a6cd3-79d2-4a1a-beb1-3274ecf84461",
+    "prId" : 8887,
+    "prUrl" : "https://github.com/redis/redis/pull/8887#pullrequestreview-723759924",
+    "prSource" : "GitHub",
+    "comments" : [
+      {
+        "id" : "a4ffeccc-2d2e-4e16-9b9f-e06f53eb4a66",
+        "parentId" : null,
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "we assert that there's no \"integrity check failed\"?\r\nlet's assert on what we do have \"dup records\" print?\r\ni see you have a few other `verify_log_message 0 \"*integrity check failed*\" 0` checks.\r\ni think they should all be replaced with what you're expecting to find, rather than what you're not expecting to find.\r\n\r\np.s. the only exception for that are when we wanna make sure we didn't crash by signal (i.e. matching `crashed by signal` to 0), and if we wanna make sure we didn't crash at all (for that we usually just do `r ping`, with a comment)",
+        "createdAt" : "2021-08-02T09:14:40Z",
+        "updatedAt" : "2021-08-02T09:53:05Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "2e22539d-669f-4b1d-bbd9-8c5b0cba8d08",
+        "parentId" : "a4ffeccc-2d2e-4e16-9b9f-e06f53eb4a66",
+        "authorId" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "body" : "I feel like you forgot to `verify_log_message`, it means there's an \"integrity check failed\".\r\nI wll add `r ping`.",
+        "createdAt" : "2021-08-03T03:23:47Z",
+        "updatedAt" : "2021-08-03T03:23:47Z",
+        "lastEditedBy" : "4c4e22a4-3f0d-4f25-9809-81320210dfb6",
+        "tags" : [
+        ]
+      },
+      {
+        "id" : "d5677460-f0fc-4726-a3a2-756cf16bd7fb",
+        "parentId" : "a4ffeccc-2d2e-4e16-9b9f-e06f53eb4a66",
+        "authorId" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "body" : "ohh, my bad. i confused it with `count_log_message`. and thought the last `0` means we're verifying that the message was **not** found in the logs.",
+        "createdAt" : "2021-08-05T20:17:34Z",
+        "updatedAt" : "2021-08-05T20:17:34Z",
+        "lastEditedBy" : "02e243fa-aeed-4b15-9e9e-405ca1702d7e",
+        "tags" : [
+        ]
+      }
+    ],
+    "commit" : "76ecbaaa70879315198e8b49a0e5cbbcfbb32faf",
+    "line" : 40,
+    "diffHunk" : "@@ -1,1 +68,72 @@        } err\n        assert_match \"*Bad data format*\" $err\n        verify_log_message 0 \"*integrity check failed*\" 0\n    }\n}"
+  }
+]
